@@ -2,8 +2,17 @@
 set -x
 set -e
 
+"""
+Initial script to install required packages when the machine is provisioned
+"""
+
 # Update package registry
 yum update -y
+
+# Install and enable httpd
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
 
 # Add Jenkins repo
 wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
@@ -28,6 +37,3 @@ systemctl start jenkins
 
 # Check Jenkins status
 systemctl status jenkins
-
-# Get the initial admin password
-cat /var/lib/jenkins/secrets/initialAdminPassword
