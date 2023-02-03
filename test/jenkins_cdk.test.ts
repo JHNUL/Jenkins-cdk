@@ -1,17 +1,12 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as JenkinsCdk from '../lib/jenkins_cdk-stack';
+import * as cdk from "aws-cdk-lib";
+import { Template } from "aws-cdk-lib/assertions";
+import * as JenkinsCdk from "../lib/jenkins_cdk-stack";
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/jenkins_cdk-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new JenkinsCdk.JenkinsCdkStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
-
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+test("Bucket Created", () => {
+  const app = new cdk.App();
+  const stack = new JenkinsCdk.JenkinsCdkStack(app, "MyTestStack");
+  const template = Template.fromStack(stack);
+  template.hasResourceProperties("AWS::EC2::SecurityGroup", {
+    GroupDescription: "Firewall rules",
+  });
 });
