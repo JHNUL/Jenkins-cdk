@@ -1,8 +1,10 @@
 #!/bin/bash -xe
 
-"""
-Initial script to install required packages when the machine is provisioned
-"""
+################################################
+# Initial script to install required           #
+# packages when the machine is provisioned     #
+################################################
+
 # Nae working at the moment, lad
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
   yum update -y # Update package registry
