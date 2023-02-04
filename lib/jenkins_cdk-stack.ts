@@ -94,7 +94,7 @@ export class JenkinsCdkStack extends cdk.Stack {
       value: instance.instancePublicIp,
     });
     new cdk.CfnOutput(this, "get-private-key", {
-      value: `aws secretsmanager get-secret-value --secret-id ec2-ssh-key/${key.keyPairName}/private --query SecretString --output text > keys/jenkins-key.pem & chmod 400 keys/${instance.instanceId}.pem`,
+      value: `aws secretsmanager get-secret-value --secret-id ec2-ssh-key/${key.keyPairName}/private --query SecretString --output text > keys/${instance.instanceId}.pem & chmod 400 keys/${instance.instanceId}.pem`,
     });
     new cdk.CfnOutput(this, "connect-with-ssh", {
       value: `ssh -i keys/${instance.instanceId}.pem -o IdentitiesOnly=yes ec2-user@${instance.instancePublicIp}`,
