@@ -4,6 +4,8 @@ import { Construct } from "constructs";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import { KeyPair } from "cdk-ec2-key-pair";
 import { config } from "../config/vars";
+import { Asset } from "aws-cdk-lib/aws-s3-assets";
+import path = require("path");
 
 export class JenkinsCdkStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -40,7 +42,7 @@ export class JenkinsCdkStack extends cdk.Stack {
       "Allows HTTPS access"
     );
 
-    // We will be needing a role for the instance
+    // Create a role for the instance
     const role = new iam.Role(this, config.EC2_INSTANCE_ROLE_ID, {
       assumedBy: new iam.ServicePrincipal("ec2.amazonaws.com"),
     });
@@ -72,15 +74,30 @@ export class JenkinsCdkStack extends cdk.Stack {
       keyName: key.keyPairName,
     });
 
+    // Create an asset that will be used as part of User Data to run on first load
+    const asset = new Asset(this, "Asset", {
+      path: path.join(__dirname, "../scripts/config.sh"),
+    });
+    const localPath = instance.userData.addS3DownloadCommand({
+      bucket: asset.bucket,
+      bucketKey: asset.s3ObjectKey,
+    });
+
+    instance.userData.addExecuteFileCommand({
+      filePath: localPath,
+      arguments: "--verbose -y",
+    });
+    asset.grantRead(instance.role);
+
     // Output some value after the stack has been set up
     new cdk.CfnOutput(this, "public-ip", {
       value: instance.instancePublicIp,
     });
     new cdk.CfnOutput(this, "get-private-key", {
-      value: `aws secretsmanager get-secret-value --secret-id ec2-ssh-key/${key.keyPairName}/private --query SecretString --output text`,
+      value: `aws secretsmanager get-secret-value --secret-id ec2-ssh-key/${key.keyPairName}/private --query SecretString --output text > keys/jenkins-key.pem & chmod 400 keys/${instance.instanceId}.pem`,
     });
     new cdk.CfnOutput(this, "connect-with-ssh", {
-      value: `ssh -i <keyfile>.pem -o IdentitiesOnly=yes ec2-user@${instance.instancePublicIp}`,
+      value: `ssh -i keys/${instance.instanceId}.pem -o IdentitiesOnly=yes ec2-user@${instance.instancePublicIp}`,
     });
   }
 }
