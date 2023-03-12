@@ -1,4 +1,4 @@
-virtualmachines:
+jenkinsfleet:
   hosts:
     jenkinsleader:
       ansible_host: "{{ public_ip }}"

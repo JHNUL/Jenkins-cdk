@@ -52,5 +52,5 @@ In order to connect to the created EC2 instance, you need to get the pem file us
 When the infra is created its time to set up the state of the machine. This part uses Ansible. The deploy process should create a variable file in `ansible/host_vars` with the EC2 instance details. Test the setup by running
 
 ```sh
-ansible -i ansible/inventory.yaml all -m ping
+ansible-playbook -i ansible/inventory.yaml ansible/playbook.yaml
 ```
