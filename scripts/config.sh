@@ -8,9 +8,6 @@
 # Nae working at the moment, lad
 exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
   yum update -y # Update package registry
-  yum install -y httpd # Install and enable httpd
-  systemctl start httpd
-  systemctl enable httpd
   wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo # Add Jenkins repo
   rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key # Import key-file from Jenkins-CI to enable installation
   yum upgrade # Upgrade all packages

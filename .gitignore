@@ -3,7 +3,8 @@
 *.d.ts
 node_modules
 .env
-
+*outputs.json
+ansible/host_vars
 # CDK asset staging directory
 .cdk.staging
 cdk.out
